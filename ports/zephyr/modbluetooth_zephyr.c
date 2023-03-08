@@ -315,7 +315,6 @@ int mp_bluetooth_gatts_register_service_end(void) {
 // 	uint16_t perm;
 // };
 
-// Note: modbluetooth UUIDs store their data in LE.
 STATIC void *create_zephyr_uuid(const mp_obj_bluetooth_uuid_t *uuid) {
     if (uuid->type == MP_BLUETOOTH_UUID_TYPE_16) {
         struct bt_uuid_16 *result = m_new(struct bt_uuid_16, 1);
