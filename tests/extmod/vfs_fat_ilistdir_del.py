@@ -2,16 +2,16 @@
 import gc
 
 try:
-    import uos
+    import os
 
-    uos.VfsFat
+    os.VfsFat
 except (ImportError, AttributeError):
     print("SKIP")
     raise SystemExit
 
 
 class RAMBlockDevice:
-    ERASE_BLOCK_SIZE = 4096
+    ERASE_BLOCK_SIZE = 512
 
     def __init__(self, blocks):
         self.data = bytearray(blocks * self.ERASE_BLOCK_SIZE)
@@ -57,7 +57,7 @@ def test(bdev, vfs_class):
             break
         vfs.mkdir(dname)
 
-        # Also create a fully drained iterator and ensure trying to re-use it
+        # Also create a fully drained iterator and ensure trying to reuse it
         # throws the correct exception.
         idir_emptied = vfs.ilistdir("/")
         l = list(idir_emptied)
@@ -72,9 +72,9 @@ def test(bdev, vfs_class):
 
 
 try:
-    bdev = RAMBlockDevice(30)
+    bdev = RAMBlockDevice(50)
 except MemoryError:
     print("SKIP")
     raise SystemExit
 
-test(bdev, uos.VfsFat)
+test(bdev, os.VfsFat)

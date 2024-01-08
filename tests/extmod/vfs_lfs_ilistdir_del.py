@@ -2,9 +2,9 @@
 import gc
 
 try:
-    import uos
+    import os
 
-    uos.VfsLfs2
+    os.VfsLfs2
 except (ImportError, AttributeError):
     print("SKIP")
     raise SystemExit
@@ -57,7 +57,7 @@ def test(bdev, vfs_class):
             break
         vfs.mkdir(dname)
 
-        # Also create a fully drained iterator and ensure trying to re-use it
+        # Also create a fully drained iterator and ensure trying to reuse it
         # throws the correct exception.
         idir_emptied = vfs.ilistdir("/")
         l = list(idir_emptied)
@@ -72,4 +72,4 @@ def test(bdev, vfs_class):
 
 
 bdev = RAMBlockDevice(30)
-test(bdev, uos.VfsLfs2)
+test(bdev, os.VfsLfs2)
