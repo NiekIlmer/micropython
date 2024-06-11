@@ -4,7 +4,16 @@ include("$(PORT_DIR)/boards/manifest.py")
 require("bundle-networking")
 
 # Utils
+require("time")
+require("senml")
 require("logging")
 
 # Bluetooth
-require("aioble", client=True, central=True, l2cap=True, security=True)
+require("aioble")
+
+# Register external library
+add_library("arduino-lib", "$(ARDUINO_LIB_DIR)")
+
+# RPC
+require("cmwx1", library="arduino-lib")
+require("msgpackrpc", library="arduino-lib")
