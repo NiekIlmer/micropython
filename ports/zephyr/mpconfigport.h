@@ -28,13 +28,14 @@
 // Include Zephyr's autoconf.h, which should be made first by Zephyr makefiles
 #include "autoconf.h"
 // Included here to get basic Zephyr environment (macros, etc.)
-#include <zephyr/zephyr.h>
+#include <zephyr/kernel.h>
 #include <zephyr/drivers/spi.h>
 
 // Usually passed from Makefile
 #ifndef MICROPY_HEAP_SIZE
-#define MICROPY_HEAP_SIZE (16 * 1024)
+#define MICROPY_HEAP_SIZE (64 * 1024)
 #endif
+#define MICROPY_PY_FRAMEBUF         (1)
 
 #define MICROPY_ENABLE_SOURCE_LINE  (1)
 #define MICROPY_STACK_CHECK         (1)
@@ -45,22 +46,22 @@
 #define MICROPY_KBD_EXCEPTION       (1)
 #define MICROPY_CPYTHON_COMPAT      (0)
 #define MICROPY_PY_ASYNC_AWAIT      (0)
-#define MICROPY_PY_ATTRTUPLE        (0)
+#define MICROPY_PY_ATTRTUPLE        (1)
 #define MICROPY_PY_BUILTINS_BYTES_HEX (1)
-#define MICROPY_PY_BUILTINS_ENUMERATE (0)
-#define MICROPY_PY_BUILTINS_FILTER  (0)
-#define MICROPY_PY_BUILTINS_MIN_MAX (0)
-#define MICROPY_PY_BUILTINS_PROPERTY (0)
-#define MICROPY_PY_BUILTINS_RANGE_ATTRS (0)
-#define MICROPY_PY_BUILTINS_REVERSED (0)
-#define MICROPY_PY_BUILTINS_SET     (0)
-#define MICROPY_PY_BUILTINS_STR_COUNT (0)
+#define MICROPY_PY_BUILTINS_ENUMERATE (1)
+#define MICROPY_PY_BUILTINS_FILTER  (1)
+#define MICROPY_PY_BUILTINS_MIN_MAX (1)
+#define MICROPY_PY_BUILTINS_PROPERTY (1)
+#define MICROPY_PY_BUILTINS_RANGE_ATTRS (1)
+#define MICROPY_PY_BUILTINS_REVERSED (1)
+#define MICROPY_PY_BUILTINS_SET     (1)
+#define MICROPY_PY_BUILTINS_STR_COUNT (1)
 #define MICROPY_PY_BUILTINS_MEMORYVIEW (1)
 #define MICROPY_PY_BUILTINS_HELP    (1)
 #define MICROPY_PY_BUILTINS_HELP_TEXT zephyr_help_text
-#define MICROPY_PY_ARRAY            (0)
-#define MICROPY_PY_COLLECTIONS      (0)
-#define MICROPY_PY_CMATH            (0)
+#define MICROPY_PY_ARRAY            (1)
+#define MICROPY_PY_COLLECTIONS      (1)
+#define MICROPY_PY_CMATH            (1)
 #define MICROPY_PY_IO               (0)
 #define MICROPY_PY_MICROPYTHON_MEM_INFO (1)
 #define MICROPY_PY_MACHINE          (1)
@@ -70,9 +71,10 @@
 #define MICROPY_PY_MACHINE_SPI_MSB (SPI_TRANSFER_MSB)
 #define MICROPY_PY_MACHINE_SPI_LSB (SPI_TRANSFER_LSB)
 #define MICROPY_PY_MACHINE_PIN_MAKE_NEW mp_pin_make_new
+#define MICROPY_MODULE_WEAK_LINKS   (1)
+#define MICROPY_PY_STRUCT           (1)
 #define MICROPY_PY_MACHINE_UART     (1)
 #define MICROPY_PY_MACHINE_UART_INCLUDEFILE "ports/zephyr/machine_uart.c"
-#define MICROPY_PY_STRUCT           (0)
 #ifdef CONFIG_NETWORKING
 // If we have networking, we likely want errno comfort
 #define MICROPY_PY_ERRNO            (1)
@@ -93,7 +95,7 @@
 #define MICROPY_PY_TIME_INCLUDEFILE "ports/zephyr/modtime.c"
 #define MICROPY_PY_ZEPHYR           (1)
 #define MICROPY_PY_ZSENSOR          (1)
-#define MICROPY_PY_SYS_MODULES      (0)
+#define MICROPY_PY_SYS_MODULES      (1)
 #define MICROPY_LONGINT_IMPL (MICROPY_LONGINT_IMPL_LONGLONG)
 #define MICROPY_FLOAT_IMPL (MICROPY_FLOAT_IMPL_FLOAT)
 #define MICROPY_PY_BUILTINS_COMPLEX (0)
@@ -116,7 +118,11 @@
 void mp_hal_signal_event(void);
 #define MICROPY_SCHED_HOOK_SCHEDULED mp_hal_signal_event()
 
+#define MICROPY_PY_SYS_PATH_ARGV_DEFAULTS (1)
 #define MICROPY_PY_SYS_PLATFORM "zephyr"
+#define MICROPY_PY_SYS_PATH_DEFAULT "/lib"
+
+
 
 #ifdef CONFIG_BOARD
 #define MICROPY_HW_BOARD_NAME "zephyr-" CONFIG_BOARD
@@ -139,3 +145,8 @@ typedef long mp_off_t;
 // extra built in names to add to the global namespace
 #define MICROPY_PORT_BUILTINS \
     { MP_ROM_QSTR(MP_QSTR_open), MP_ROM_PTR(&mp_builtin_open_obj) },
+
+#define MICROPY_BEGIN_ATOMIC_SECTION irq_lock
+#define MICROPY_END_ATOMIC_SECTION irq_unlock
+
+
